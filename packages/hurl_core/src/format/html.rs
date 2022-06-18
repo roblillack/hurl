@@ -204,6 +204,11 @@ impl Htmlable for SectionValue {
                     buffer.push_str(item.to_html().as_str())
                 }
             }
+            SectionValue::Options(items) => {
+                for item in items {
+                    buffer.push_str(item.to_html().as_str())
+                }
+            }
         }
         buffer
     }
@@ -223,6 +228,12 @@ impl Htmlable for KeyValue {
         buffer.push_str("</span>");
         buffer.push_str(self.line_terminator0.to_html().as_str());
         buffer
+    }
+}
+
+impl Htmlable for EntryOption {
+    fn to_html(&self) -> String {
+       "TODO".to_string()
     }
 }
 

@@ -207,6 +207,7 @@ impl Section {
             SectionValue::Cookies(_) => "Cookies",
             SectionValue::Captures(_) => "Captures",
             SectionValue::MultipartFormData(_) => "MultipartFormData",
+            SectionValue::Options(_) => "Options",
         }
     }
 }
@@ -221,6 +222,7 @@ pub enum SectionValue {
     Cookies(Vec<Cookie>),
     Captures(Vec<Capture>),
     Asserts(Vec<Assert>),
+    Options(Vec<EntryOption>)
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -652,4 +654,34 @@ pub struct Expr {
 pub struct Variable {
     pub name: String,
     pub source_info: SourceInfo,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum EntryOption {
+    Insecure {
+        name: OptionName,
+        value: OptionValue,
+    },
+    CaCertificate {
+        name: OptionName,
+        value: OptionValue,
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct OptionName {
+    pub line_terminators: Vec<LineTerminator>,
+    pub space0: Whitespace,
+    pub name: String,
+    pub space1: Whitespace,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum OptionValue {
+    Bool {
+        value: bool
+    },
+    String {
+        value: String
+    }
 }

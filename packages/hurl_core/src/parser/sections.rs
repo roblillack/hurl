@@ -53,6 +53,7 @@ fn request_section(reader: &mut Reader) -> ParseResult<'static, Section> {
         "FormParams" => section_value_form_params(reader)?,
         "MultipartFormData" => section_value_multipart_form_data(reader)?,
         "Cookies" => section_value_cookies(reader)?,
+        "Options" => section_value_options(reader)?,
         _ => {
             return Err(Error {
                 pos: Pos {
@@ -149,6 +150,12 @@ fn section_value_asserts(reader: &mut Reader) -> ParseResult<'static, SectionVal
     let asserts = zero_or_more(assert, reader)?;
     Ok(SectionValue::Asserts(asserts))
 }
+
+fn section_value_options(reader: &mut Reader) -> ParseResult<'static, SectionValue> {
+    let options = zero_or_more(option, reader)?;
+    Ok(SectionValue::Options(options))
+}
+
 
 fn cookie(reader: &mut Reader) -> ParseResult<'static, Cookie> {
     // let start = reader.state.clone();
@@ -332,6 +339,39 @@ fn assert(reader: &mut Reader) -> ParseResult<'static, Assert> {
         space1,
         predicate: predicate0,
         line_terminator0,
+    })
+}
+
+fn option(reader: &mut Reader) -> ParseResult<'static, EntryOption> {
+    choice(
+        vec![
+            option_insecure,
+            option_cacert,
+        ],
+        reader,
+    )
+}
+
+
+fn option_insecure(reader: &mut Reader) -> ParseResult<'static, EntryOption> {
+    let start = reader.state.clone();
+    Err(Error {
+        pos: start.pos,
+        recoverable: false,
+        inner: ParseError::OptionName {
+            name: "insecure".to_string(),
+        },
+    })
+}
+
+fn option_cacert(reader: &mut Reader) -> ParseResult<'static, EntryOption> {
+    let start = reader.state.clone();
+    Err(Error {
+        pos: start.pos,
+        recoverable: false,
+        inner: ParseError::OptionName {
+            name: "cacert".to_string(),
+        },
     })
 }
 
